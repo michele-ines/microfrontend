@@ -1,0 +1,17 @@
+{
+  "extends": "ts-config-single-spa/tsconfig.json",
+  "compilerOptions": {
+    "jsx": "react-jsx",
+    "declarationDir": "dist",
+    "types": ["jest", "node"] // <== ADICIONE ESTA LINHA
+  },
+  "files": [
+    "src/byteBank-bytebank-footer.tsx"
+  ],
+  "include": [
+    "src/**/*"
+  ],
+  "exclude": [
+    "src/**/*.test* "
+  ]
+}

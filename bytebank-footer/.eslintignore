@@ -1,0 +1,8 @@
+# Ignorar arquivos de configuração na raiz do projeto
+webpack.config.js
+jest.config.js
+babel.config.json
+
+# Ignorar a pasta de build e dependências
+/dist
+/node_modules

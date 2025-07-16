@@ -1,0 +1,143 @@
+# byteBank – Microfrontends com single‑spa
+
+> Repositório de estudo que demonstra uma arquitetura de **microfrontends** usando **single‑spa**, **React + TypeScript** e **Webpack Module Federation**.
+>
+> Cada microfrontend foi gerado com `npx create-single-spa` e pode ser executado ou versionado de forma isolada.
+
+---
+
+## Pré‑requisitos
+
+| Ferramenta  | Versão mínima           | Como instalar                              |
+| ----------- | ----------------------- | ------------------------------------------ |
+| **Node.js** | `v20.19.0`              | [https://nodejs.org](https://nodejs.org)   |
+| **npm**     | `v11.4.2`               | já vem com o Node 20                       |
+| **Git**     | Qualquer versão recente | [https://git‑scm.com](https://git‑scm.com) |
+
+- **Node 20 LTS** garante compatibilidade com a sintaxe ECMAScript mais recente e suporte oficial da comunidade single‑spa.
+- **npm 11** traz melhorias de performance e melhores mensagens de erro. Se você usa **pnpm** ou **yarn**, adapte os comandos conforme necessário.
+
+---
+
+## Estrutura de pastas
+
+```
+byteBank/
+├── bytebank-root-config/   # Orquestrador (root‑config) – registra e monta os MFEs
+│   ├── package.json
+│   └── src/
+└── bytebank-footer/        # Microfrontend de rodapé (React)
+    ├── package.json
+    └── src/
+```
+
+*Cada microfrontend possui ****seu próprio**** **`package.json`**, teste, lint, build e servidor de dev.*
+
+---
+
+## Passo a passo
+
+### 1  Clonar o repositório
+
+```bash
+# Substitua URL_GIT pelo endereço do seu fork ou repositório
+$ git clone <URL_GIT> byteBank
+$ cd byteBank
+```
+
+### 2  Instalar dependências
+
+> Dependências são instaladas **na raiz** (para o script `concurrently`) e **em cada microfrontend**.
+
+```bash
+# 2.1 Root – instala apenas "concurrently"
+$ npm install
+
+# 2.2 Microfrontends
+$ npm install --prefix bytebank-root-config
+$ npm install --prefix bytebank-footer
+```
+
+> Dica: crie um script `` na raiz para automatizar esses três comandos caso deseje.
+
+### 3  Rodar em modo desenvolvimento
+
+Execute tudo de uma vez (root‑config + footer):
+
+```bash
+$ npm start
+```
+
+*O comando acima usa **`concurrently`** para disparar:*\
+`npm start --prefix bytebank-footer` **&** `npm start --prefix bytebank-root-config`
+
+Cada microfrontend roda normalmente em `` (veja o console). O single‑spa faz o *mount* automático em tempo real.
+
+#### Rodar individualmente
+
+```bash
+# Orquestrador
+$ npm start --prefix bytebank-root-config
+
+# Footer
+$ npm start --prefix bytebank-footer
+```
+
+### 4  Build para produção
+
+```bash
+$ npm run build --prefix bytebank-root-config
+$ npm run build --prefix bytebank-footer
+```
+
+Os artefatos são gerados em `dist/` dentro de cada microfrontend.
+
+### 5  Testes unitários
+
+Cada MFE possui sua própria configuração **Jest + React Testing Library**:
+
+```bash
+$ npm test --prefix bytebank-footer
+```
+
+> Adicione mais suites e *scripts* conforme necessário.
+
+### 6  Lint e Prettier
+
+```bash
+# ESLint
+$ npm run lint --prefix bytebank-footer
+
+# Prettier (formatação automática)
+$ npm run format --prefix bytebank-footer
+```
+
+### 7  Publicação (opcional)
+
+Se desejar publicar cada MFE em um repositório de artefatos (ex.: S3, Nginx, GitLab Pages):
+
+```bash
+# Exemplo: footer para S3
+$ aws s3 sync bytebank-footer/dist s3://meu‑bucket/bytebank/footer/
+```
+
+---
+
+## Dúvidas frequentes
+
+| Pergunta                   | Resposta                                                                                    |
+| -------------------------- | ------------------------------------------------------------------------------------------- |
+| *Posso usar Yarn ou pnpm?* | Sim. Substitua `npm install` por `yarn` ou `pnpm i` e ajuste os scripts de prefixo.         |
+| *Erro de porta ocupada?*   | Altere a porta no `webpack.config.js` do microfrontend conflitado (campo `devServer.port`). |
+| *Hot‑reload não funciona?* | Verifique se o import map no **root‑config** aponta para `localhost` com a porta correta.   |
+
+---
+
+### Créditos
+
+Projeto educacional para a pós‑graduação em **Engenharia Front‑End** – Faculdade XP.
+
+---
+
+> **Fique à vontade para abrir issues e PRs!**
+
